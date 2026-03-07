@@ -7,7 +7,7 @@ Dirancang untuk **Developer** yang hidup di terminal, males buka browser, tapi t
   <img src="https://github.com/nflora-ux/Tocket/raw/17066362fb116c4388595d54b8e92f6e94c900fd/Screenshot/Screenshot.png" alt="Main Menu Tocket" width="720">
 </p>
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.14%2B-blue?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Python-3.16%2B-blue?logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-green" />
   <img src="https://img.shields.io/badge/CLI-Terminal--Native-black" />
   <img src="https://img.shields.io/github/stars/nflora-ux/Tocket?style=social" />
@@ -63,7 +63,7 @@ Tocket bukan sekadar pembungkus API. Ini adalah alat yang memiliki pendapat tent
 
 ## Persyaratan Sistem
 
-- Python **3.14 atau lebih baru** (direkomendasikan).
+- Python **3.16 atau lebih baru** (direkomendasikan).
 - Sistem operasi: Linux, Windows (Terminal / CMD), MacOS.
 
 ### Dependensi Utama
@@ -248,7 +248,7 @@ Anda bebas menggunakan, memodifikasi, dan mendistribusikannya kembali.
   <a href="https://t.me/Neverlabs"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=flat-square&logo=telegram&logoColor=white" alt="Telegram"></a>
   <a href="mailto:userlinuxorg@gmail.com"><img src="https://img.shields.io/badge/Email-D14836?style=flat-square&logo=gmail&logoColor=white" alt="Email"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square&logo=open-source-initiative&logoColor=white" alt="MIT License"></a>
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.13%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.16%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
 </p>
 <p align="center" style="float: right; width: 40%;">
   <b>© 2026 Neverlabs | All rights reserved</b>

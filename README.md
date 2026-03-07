@@ -200,9 +200,45 @@ Setup Repositori      Keluar
 ---
 
 ## Batasan Teknis
-Unggah berkas >100 MB tidak didukung karena batasan GitHub Contents API.
+- Unggah berkas >100 MB tidak didukung karena batasan GitHub Contents API.
+- Mengganti nama folder dilakukan dengan membuat ulang berkas-berkas di dalamnya, lalu menghapus yang lama.
+- Izin operasi bergantung pada scopes token dan peran pengguna di repositori.
 
-Mengganti nama folder dilakukan dengan membuat ulang berkas-berkas di dalamnya, lalu menghapus yang lama.
+## Pemecahan Masalah
+`ModuleNotFoundError: No module named 'tocket'`
+Pastikan Anda menjalankan dari direktori yang benar:
+```bash
+Tocket/
+  ├─ tocket/
+  └─ main.py
+```
 
-Izin operasi bergantung pada scopes token dan peran pengguna di repositori.
+## Daftar repositori kosong
+- Token mungkin tidak valid atau scopes kurang (repo diperlukan untuk melihat repositori privat).
+- Perbarui token di menu Pengaturan.
+
+## Unggah berkas gagal
+- Periksa ukuran berkas (maksimal 100 MB).
+- Pastikan branch yang dituju benar.
+- Pastikan token memiliki izin yang cukup (`repo`, `delete_repo`, `admin:public_key`).
+
+## Token tidak dapat didekripsi
+- Kata sandi yang dimasukkan mungkin salah.
+- Jika benar-benar lupa, hapus token melalui menu Pengaturan dan masukkan token baru.
+---
+
+## Kontribusi
+Kami sangat menerima kontribusi melalui pull request.
+**Alur singkat**:
+- Fork repositori ini.
+- Buat cabang baru: `feat/*` atau `fix/*`.
+- Tulis kode dengan jelas.
+- Kirimkan pull request ke branch `main`.
+---
+
+## Lisensi
+Proyek ini dilisensikan di bawah **MIT License**.
+Anda bebas menggunakan, memodifikasi, dan mendistribusikannya kembali.
+
+---
 

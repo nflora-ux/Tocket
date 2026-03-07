@@ -127,13 +127,13 @@ Setup Repositori      Keluar
 
 ---
 
-Model Keamanan Token & Kata Sandi
-Token tidak pernah disimpan dalam bentuk teks biasa.
+## Model Keamanan Token & Kata Sandi
+- Token tidak pernah disimpan dalam bentuk teks biasa.
+- Kata sandi hanya digunakan untuk menurunkan kunci enkripsi, tidak disimpan langsung.
+- Lupa kata sandi = token tidak dapat dipulihkan. Ini adalah keputusan desain untuk keamanan maksimal.
+- Untuk mereset, hapus token melalui menu Pengaturan dan masukkan token baru.
 
-Kata sandi hanya digunakan untuk menurunkan kunci enkripsi, tidak disimpan langsung.
-
-Lupa kata sandi = token tidak dapat dipulihkan. Ini adalah keputusan desain untuk keamanan maksimal.
-
-Untuk mereset, hapus token melalui menu Pengaturan dan masukkan token baru.
-
-Lokasi Basis Data
+## Lokasi Basis Data
+```bash
+~/.tocket/tocket.db
+```

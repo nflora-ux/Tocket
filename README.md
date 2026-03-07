@@ -145,25 +145,64 @@ Setup Repositori      Keluar
 ## Panduan Penggunaan
 
 1. Membuat Repositori Baru
-Pilih opsi 1 di menu utama.
-
-Masukkan nama repositori, deskripsi, dan tentukan visibilitas (publik/privat).
-
-Anda dapat menambahkan README, memilih template .gitignore, dan template lisensi.
-
-Setelah konfirmasi, repositori akan dibuat dan ditampilkan URL-nya.
+  - Pilih opsi `Buat repositori` di menu utama.
+  - Masukkan nama repositori, deskripsi, dan tentukan visibilitas (publik/privat).
+  - Anda dapat menambahkan README, memilih template .gitignore, dan template lisensi.
+  - Setelah konfirmasi, repositori akan dibuat dan ditampilkan URL-nya.
 
 2. Melihat Daftar Repositori
-Pilih opsi 2.
-
-Tocket akan menampilkan daftar repositori dalam bentuk tabel dengan informasi visibilitas dan cabang default.
-
-Anda juga dapat memfilter repositori berdasarkan nama (opsional).
+  - Pilih opsi `List Repositori`.
+  - Tocket akan menampilkan daftar repositori dalam bentuk tabel dengan informasi visibilitas dan branch default.
+  - Anda juga dapat mencari repositori berdasarkan nama (opsional).
 
 3. Setup Repositori (Manajemen Berkas)
-Pilih opsi 3, lalu masukkan nama repositori yang ingin dikelola.
+  - Pilih opsi `Setup Repositori`, lalu masukkan nama repositori yang ingin dikelola.
+  - Anda dapat memilih branch yang akan digunakan (default: cabang utama).
+  - Submenu akan muncul dengan berbagai opsi:
+    - Upload File
+      - Navigasi folder lokal menggunakan panah untuk scroll.
+      - Ketik `all` untuk mengunggah semua file di folder saat ini (tanpa subfolder).
+      - Ketik `subfolder` untuk mengunggah seluruh folder beserta subfoldernya (rekursif).
+      - Tentukan path tujuan di repositori (kosong untuk root).
+    - Hapus File
+      - Masukkan path file di repositori yang akan dihapus.
+      - Konfirmasi penghapusan.
+    - Rename File/Folder
+      - Masukkan path sumber dan path tujuan.
+      - Sistem akan memindahkan semua file di dalam folder jika diperlukan.
+    - List File
+      - Menampilkan pohon direktori repositori dengan tipe dan ukuran file.
+    - Update File
+      - Pilih file dari repositori yang akan diperbarui.
+      - Pilih file lokal sebagai sumber konten baru.
+      - Konten file repositori akan diganti dengan konten file lokal (nama file tetap).
+    - Ubah Visibilitas
+      - Ubah repositori menjadi publik atau privat.
+    - Ubah .gitignore
+      - Pilih template .gitignore dari daftar, atau masukkan konten kustom.
+      - File .gitignore di repositori akan diperbarui.
+    - Ubah Lisensi
+      - Pilih template lisensi dari daftar, atau masukkan konten kustom.
+      - File LICENSE akan diperbarui.
+    - Hapus Folder
+      - Masukkan path folder yang akan dihapus.
+      - Seluruh isi folder akan dihapus secara rekursif.
+4. Menghapus Repositori
+  - Pilih opsi `Hapus Repositori`, masukkan nama repositori, dan konfirmasi.
+> *Tindakan ini tidak dapat dibatalkan!*
 
-Anda dapat memilih cabang (branch) yang akan digunakan (default: cabang utama).
+5. Pengaturan
+  - Kelola token dan kata sandi lokal:
+    - Tampilkan Token – menampilkan token dalam bentuk tersamar.
+    - Ubah Token – mengganti token yang tersimpan.
+    - Hapus Token – menghapus token dari basis data.
+    - Buat/Ubah/Hapus Kata Sandi – mengelola kata sandi lokal.
+---
 
-Submenu akan muncul dengan berbagai opsi:
+## Batasan Teknis
+Unggah berkas >100 MB tidak didukung karena batasan GitHub Contents API.
+
+Mengganti nama folder dilakukan dengan membuat ulang berkas-berkas di dalamnya, lalu menghapus yang lama.
+
+Izin operasi bergantung pada scopes token dan peran pengguna di repositori.
 

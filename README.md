@@ -133,7 +133,37 @@ Setup Repositori      Keluar
 - Lupa kata sandi = token tidak dapat dipulihkan. Ini adalah keputusan desain untuk keamanan maksimal.
 - Untuk mereset, hapus token melalui menu Pengaturan dan masukkan token baru.
 
+---
+
 ## Lokasi Basis Data
 ```bash
 ~/.tocket/tocket.db
 ```
+> **Peringatan**: *Jangan pernah commit berkas ini ke repositori publik!*
+---
+
+## Panduan Penggunaan
+
+1. Membuat Repositori Baru
+Pilih opsi 1 di menu utama.
+
+Masukkan nama repositori, deskripsi, dan tentukan visibilitas (publik/privat).
+
+Anda dapat menambahkan README, memilih template .gitignore, dan template lisensi.
+
+Setelah konfirmasi, repositori akan dibuat dan ditampilkan URL-nya.
+
+2. Melihat Daftar Repositori
+Pilih opsi 2.
+
+Tocket akan menampilkan daftar repositori dalam bentuk tabel dengan informasi visibilitas dan cabang default.
+
+Anda juga dapat memfilter repositori berdasarkan nama (opsional).
+
+3. Setup Repositori (Manajemen Berkas)
+Pilih opsi 3, lalu masukkan nama repositori yang ingin dikelola.
+
+Anda dapat memilih cabang (branch) yang akan digunakan (default: cabang utama).
+
+Submenu akan muncul dengan berbagai opsi:
+

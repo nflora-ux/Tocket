@@ -144,18 +144,18 @@ Setup Repositori      Keluar
 
 ## Panduan Penggunaan
 
-1. Membuat Repositori Baru
+## 1. Membuat Repositori Baru
   - Pilih opsi `Buat repositori` di menu utama.
   - Masukkan nama repositori, deskripsi, dan tentukan visibilitas (publik/privat).
   - Anda dapat menambahkan README, memilih template .gitignore, dan template lisensi.
   - Setelah konfirmasi, repositori akan dibuat dan ditampilkan URL-nya.
 
-2. Melihat Daftar Repositori
+## 2. Melihat Daftar Repositori
   - Pilih opsi `List Repositori`.
   - Tocket akan menampilkan daftar repositori dalam bentuk tabel dengan informasi visibilitas dan branch default.
   - Anda juga dapat mencari repositori berdasarkan nama (opsional).
 
-3. Setup Repositori (Manajemen Berkas)
+## 3. Setup Repositori (Manajemen Berkas)
   - Pilih opsi `Setup Repositori`, lalu masukkan nama repositori yang ingin dikelola.
   - Anda dapat memilih branch yang akan digunakan (default: cabang utama).
   - Submenu akan muncul dengan berbagai opsi:
@@ -187,11 +187,11 @@ Setup Repositori      Keluar
     - Hapus Folder
       - Masukkan path folder yang akan dihapus.
       - Seluruh isi folder akan dihapus secara rekursif.
-4. Menghapus Repositori
+## 4. Menghapus Repositori
   - Pilih opsi `Hapus Repositori`, masukkan nama repositori, dan konfirmasi.
 > *Tindakan ini tidak dapat dibatalkan!*
 
-5. Pengaturan
+## 5. Pengaturan
   - Kelola token dan kata sandi lokal:
     - Tampilkan Token – menampilkan token dalam bentuk tersamar.
     - Ubah Token – mengganti token yang tersimpan.

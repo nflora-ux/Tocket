@@ -3,7 +3,10 @@
 **Tocket** adalah *command-line interface* modern, aman, dan terstruktur untuk mengelola repositori GitHub langsung dari terminal.  
 Dirancang untuk **Developer** yang hidup di terminal, males buka browser, tapi tetap mengutamakan **keamanan**, **kecepatan**, dan **alur kerja yang bersih**.
 
-
+<p align="center">
+  <img src="https://github.com/nflora-ux/Tocket/raw/main/screenshots/menu-utama.png" alt="Main Menu Tocket" width="720">
+</p>
+<h3 align="center">Main menu</h3>
 ---
 
 <p align="center">

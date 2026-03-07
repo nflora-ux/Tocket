@@ -242,13 +242,18 @@ Anda bebas menggunakan, memodifikasi, dan mendistribusikannya kembali.
 
 ---
 
-<p align="left" style="float: left; width: 60%;">
-  <a href="https://instagram.com/neveerlabs"><img src="https://img.shields.io/badge/Instagram-E4405F?style=flat-square&logo=instagram&logoColor=white" alt="Instagram"></a>
-  <a href="https://github.com/neveerlabs"><img src="https://img.shields.io/badge/GitHub-100000?style=flat-square&logo=github&logoColor=white" alt="GitHub"></a>
-  <a href="https://t.me/Neverlabs"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=flat-square&logo=telegram&logoColor=white" alt="Telegram"></a>
-  <a href="mailto:userlinuxorg@gmail.com"><img src="https://img.shields.io/badge/Email-D14836?style=flat-square&logo=gmail&logoColor=white" alt="Email"></a>
-</p>
-<p align="center" style="float: right; width: 40%;">
-  <b>© 2026 Neverlabs | All rights reserved</b>
-</p>
-<br clear="all">
+<table width="100%" border="0" cellpadding="5" cellspacing="0">
+  <tr>
+    <td align="left" valign="middle">
+      <a href="https://instagram.com/neveerlabs"><img src="https://img.shields.io/badge/Instagram-E4405F?style=flat-square&logo=instagram&logoColor=white" alt="Instagram"></a>
+      <a href="https://github.com/neveerlabs"><img src="https://img.shields.io/badge/GitHub-100000?style=flat-square&logo=github&logoColor=white" alt="GitHub"></a>
+      <a href="https://t.me/Neverlabs"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=flat-square&logo=telegram&logoColor=white" alt="Telegram"></a>
+      <a href="mailto:userlinuxorg@gmail.com"><img src="https://img.shields.io/badge/Email-D14836?style=flat-square&logo=gmail&logoColor=white" alt="Email"></a>
+      <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square&logo=open-source-initiative&logoColor=white" alt="MIT License"></a>
+      <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.13%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
+    </td>
+    <td align="right" valign="middle">
+      <b>© 2026 Neverlabs | All rights reserved</b>
+    </td>
+  </tr>
+</table>

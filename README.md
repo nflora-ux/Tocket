@@ -7,7 +7,7 @@ Dirancang untuk **Developer** yang hidup di terminal, males buka browser, tapi t
   <img src="https://github.com/nflora-ux/Tocket/raw/17066362fb116c4388595d54b8e92f6e94c900fd/Screenshot/Screenshot.png" alt="Main Menu Tocket" width="720">
 </p>
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.13%2B-blue?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Python-3.14%2B-blue?logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-green" />
   <img src="https://img.shields.io/badge/CLI-Terminal--Native-black" />
   <img src="https://img.shields.io/github/stars/nflora-ux/Tocket?style=social" />
@@ -96,6 +96,8 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
+---
+
 ## Cara mendapatkan Token Classic Github:
   1. Buka GitHub Settings > Tokens (classic).
   2. Klik Generate new token (classic).
@@ -106,6 +108,8 @@ python3 main.py
   7. admin:public_key – jika diperlukan untuk mengelola kunci SSH.
   8. Klik Generate token.
   9. Salin token yang muncul.
+
+---
 
 ## Mulai cepat:
 Saat pertama kali menjalankan Tocket:
@@ -121,3 +125,15 @@ Setup Repositori      Keluar
 ```
 > *Gunakan tombol panah untuk memilih, lalu Enter untuk konfirmasi.*
 
+---
+
+Model Keamanan Token & Kata Sandi
+Token tidak pernah disimpan dalam bentuk teks biasa.
+
+Kata sandi hanya digunakan untuk menurunkan kunci enkripsi, tidak disimpan langsung.
+
+Lupa kata sandi = token tidak dapat dipulihkan. Ini adalah keputusan desain untuk keamanan maksimal.
+
+Untuk mereset, hapus token melalui menu Pengaturan dan masukkan token baru.
+
+Lokasi Basis Data

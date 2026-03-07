@@ -6,9 +6,6 @@ Dirancang untuk **Developer** yang hidup di terminal, males buka browser, tapi t
 <p align="center">
   <img src="https://github.com/nflora-ux/Tocket/raw/17066362fb116c4388595d54b8e92f6e94c900fd/Screenshot/Screenshot.png" alt="Main Menu Tocket" width="720">
 </p>
-<h3 align="center">Main menu</h3>
----
-
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.13%2B-blue?logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-green" />

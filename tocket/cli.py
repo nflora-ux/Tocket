@@ -719,6 +719,7 @@ def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo:
                 if not Confirm.ask("Upload semua file di folder ini tanpa subfolder?"):
                     continue
                 repo_path = Prompt.ask("Simpan path di repositori (kosong = root, atau folder/ diakhiri '/' untuk folder)", default="")
+                branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
                 files_to_upload = [p for p in current.iterdir() if p.is_file()]
                 if not files_to_upload:
                     display_warning("Tidak ada file di folder ini.")
@@ -743,11 +744,8 @@ def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo:
             if sel.lower() == 'subfolder':
                 if not Confirm.ask(f"Upload seluruh folder {current.name} beserta subfolder ke repositori?"):
                     continue
-                base_folder = current.name
-                if not base_folder:
-                    display_error("Tidak dapat menentukan nama folder.")
-                    return
-                repo_path = base_folder + "/"
+                repo_path = Prompt.ask("Simpan path di repositori (kosong = root, atau folder/ diakhiri '/' untuk folder)", default="")
+                branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
                 all_files = []
                 for root, dirs, files in os.walk(current):
                     root_path = Path(root)
@@ -762,7 +760,10 @@ def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo:
                 with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), BarColumn(), TaskProgressColumn()) as progress:
                     task = progress.add_task("[cyan]Mengupload file...", total=len(all_files))
                     for full_path, rel_path in all_files:
-                        target = repo_path + rel_path.as_posix()
+                        if repo_path.strip():
+                            target = repo_path.strip().rstrip('/') + '/' + rel_path.as_posix()
+                        else:
+                            target = rel_path.as_posix()
                         try:
                             content = read_binary_file(str(full_path))
                             gh.create_or_update_file(owner, repo, target, content, message=f"Tocket: upload {target}", branch=branch)
@@ -791,6 +792,7 @@ def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo:
                 repo_path = Prompt.ask("Simpan path di repositori (kosong = root, atau folder/ diakhiri '/' untuk folder)", default="")
                 target_path = (repo_path.strip() + path.name) if repo_path.strip() else path.name
                 try:
+                    branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
                     content = read_binary_file(str(path))
                     gh.create_or_update_file(owner, repo, target_path, content, message=f"Tocket: upload {target_path}", branch=branch)
                     db.add_history("upload_file", f"{owner}/{repo}/{target_path}")
@@ -820,6 +822,7 @@ def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo:
                                     return
                                 repo_path = Prompt.ask("Simpan path di repositori (kosong = root)", default="")
                                 target_path = (repo_path.strip() + path.name) if repo_path.strip() else path.name
+                                branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
                                 content = read_binary_file(str(path))
                                 gh.create_or_update_file(owner, repo, target_path, content, message=f"Tocket: upload {target_path}", branch=branch)
                                 db.add_history("upload_file", f"{owner}/{repo}/{target_path}")

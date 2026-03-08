@@ -599,6 +599,7 @@ def setup_repo_flow(db: ConfigDB, gh: Optional[GitHubClient], username: str, pas
                 ('Ubah Lisensi', '8'),
                 ('Hapus folder', '9'),
                 ('Trigger GitHub Actions', '10'),
+                ('Upload folder', '11'),
                 ('Kembali', '0'),
             ]
             q = inquirer.List('opt', message="Pilih opsi", choices=menu_choices, carousel=True)
@@ -626,6 +627,8 @@ def setup_repo_flow(db: ConfigDB, gh: Optional[GitHubClient], username: str, pas
                 delete_folder_flow(db, gh, username, repo_name, branch)
             elif opt == '10':
                 trigger_workflow_flow(db, gh, username, repo_name, branch)
+            elif opt == '11':
+                upload_folder_flow(db, gh, username, repo_name, branch)
             elif opt == '0':
                 break
     except Exception as e:
@@ -700,6 +703,34 @@ def pick_local_file() -> Optional[Path]:
                         display_error("Input tidak valid!")
             except ValueError:
                 display_error("Input tidak dikenali.")
+
+def pick_local_folder() -> Optional[Path]:
+    start_path = Prompt.ask("Mulai path folder (kosong = direktori saat ini)", default=".")
+    current = Path(start_path).expanduser().resolve()
+    while True:
+        display_directory(current)
+        sel = Prompt.ask("Pilih nomor folder (atau 'q' untuk batal)", default="")
+        if sel.lower() == 'q':
+            return None
+        try:
+            idx = int(sel)
+            if idx == 0:
+                if current.parent == current:
+                    display_warning("Sudah berada di dalam root.")
+                else:
+                    current = current.parent
+            else:
+                files = list(current.iterdir())
+                if 1 <= idx <= len(files):
+                    chosen = files[idx - 1]
+                    if chosen.is_dir():
+                        return chosen
+                    else:
+                        display_error("Pilihan bukan folder. Silakan pilih nomor folder.")
+                else:
+                    display_error("Input tidak valid!")
+        except ValueError:
+            display_error("Input tidak dikenali. Masukkan nomor folder.")
 
 def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo: str, branch: str):
     try:
@@ -834,6 +865,59 @@ def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo:
                     display_error("Input tidak dikenali.")
     except Exception as e:
         display_error(f"Terjadi kesalahan saat upload: {e}")
+    finally:
+        input("\nTekan Enter untuk kembali...")
+
+def upload_folder_flow(db: ConfigDB, gh: GitHubClient, owner: str, repo: str, branch: str):
+    try:
+        if gh is None or gh.token is None:
+            display_error("Diperlukan token untuk meng-upload folder.")
+            return
+
+        folder_path = pick_local_folder()
+        if folder_path is None:
+            display_warning("Batal memilih folder.")
+            return
+
+        repo_path = Prompt.ask("Simpan path di repositori (kosong = root, atau folder/ diakhiri '/' untuk folder)", default="")
+        branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+
+        all_files = []
+        for root, dirs, files in os.walk(folder_path):
+            root_path = Path(root)
+            for file in files:
+                full_path = root_path / file
+                rel_path = full_path.relative_to(folder_path)
+                all_files.append((full_path, rel_path))
+
+        if not all_files:
+            display_warning("Folder kosong. Tidak ada file untuk diupload.")
+            return
+
+        if not Confirm.ask(f"Upload folder {folder_path.name} dan seluruh isinya ({len(all_files)} file) ke repositori?"):
+            display_warning("Dibatalkan.")
+            return
+
+        success = 0
+        with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), BarColumn(), TaskProgressColumn()) as progress:
+            task = progress.add_task("[cyan]Mengupload file...", total=len(all_files))
+            for full_path, rel_path in all_files:
+                if repo_path.strip():
+                    target = repo_path.strip().rstrip('/') + '/' + rel_path.as_posix()
+                else:
+                    target = rel_path.as_posix()
+                try:
+                    content = read_binary_file(str(full_path))
+                    gh.create_or_update_file(owner, repo, target, content, message=f"Tocket: upload {target}", branch=branch)
+                    success += 1
+                    progress.update(task, advance=1, description=f"[green]Upload {rel_path} sukses")
+                except Exception as e:
+                    display_error(f"Gagal upload {rel_path}: {e}")
+                    if not Confirm.ask("Lanjutkan upload file berikutnya?"):
+                        break
+        display_success(f"Upload folder selesai: {success} dari {len(all_files)} file berhasil.")
+    except Exception as e:
+        display_error(f"Terjadi kesalahan saat upload folder: {e}")
     finally:
         input("\nTekan Enter untuk kembali...")
 

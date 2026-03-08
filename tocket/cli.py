@@ -750,7 +750,11 @@ def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo:
                 if not Confirm.ask("Upload semua file di folder ini tanpa subfolder?"):
                     continue
                 repo_path = Prompt.ask("Simpan path di repositori (kosong = root, atau folder/ diakhiri '/' untuk folder)", default="")
-                branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+                try:
+                    branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+                except Exception as e:
+                    display_error(f"Gagal mendapatkan branch default: {e}")
+                    continue
                 files_to_upload = [p for p in current.iterdir() if p.is_file()]
                 if not files_to_upload:
                     display_warning("Tidak ada file di folder ini.")
@@ -776,7 +780,11 @@ def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo:
                 if not Confirm.ask(f"Upload seluruh folder {current.name} beserta subfolder ke repositori?"):
                     continue
                 repo_path = Prompt.ask("Simpan path di repositori (kosong = root, atau folder/ diakhiri '/' untuk folder)", default="")
-                branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+                try:
+                    branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+                except Exception as e:
+                    display_error(f"Gagal mendapatkan branch default: {e}")
+                    continue
                 all_files = []
                 for root, dirs, files in os.walk(current):
                     root_path = Path(root)
@@ -823,7 +831,11 @@ def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo:
                 repo_path = Prompt.ask("Simpan path di repositori (kosong = root, atau folder/ diakhiri '/' untuk folder)", default="")
                 target_path = (repo_path.strip() + path.name) if repo_path.strip() else path.name
                 try:
-                    branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+                    try:
+                        branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+                    except Exception as e:
+                        display_error(f"Gagal mendapatkan branch default: {e}")
+                        continue
                     content = read_binary_file(str(path))
                     gh.create_or_update_file(owner, repo, target_path, content, message=f"Tocket: upload {target_path}", branch=branch)
                     db.add_history("upload_file", f"{owner}/{repo}/{target_path}")
@@ -853,7 +865,11 @@ def upload_file_flow(db: ConfigDB, gh: Optional[GitHubClient], owner: str, repo:
                                     return
                                 repo_path = Prompt.ask("Simpan path di repositori (kosong = root)", default="")
                                 target_path = (repo_path.strip() + path.name) if repo_path.strip() else path.name
-                                branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+                                try:
+                                    branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+                                except Exception as e:
+                                    display_error(f"Gagal mendapatkan branch default: {e}")
+                                    continue
                                 content = read_binary_file(str(path))
                                 gh.create_or_update_file(owner, repo, target_path, content, message=f"Tocket: upload {target_path}", branch=branch)
                                 db.add_history("upload_file", f"{owner}/{repo}/{target_path}")
@@ -880,7 +896,11 @@ def upload_folder_flow(db: ConfigDB, gh: GitHubClient, owner: str, repo: str, br
             return
 
         repo_path = Prompt.ask("Simpan path di repositori (kosong = root, atau folder/ diakhiri '/' untuk folder)", default="")
-        branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+        try:
+            branch = get_repo_default_branch(gh, owner, repo) or Prompt.ask("Masukkan branch target", default="main")
+        except Exception as e:
+            display_error(f"Gagal mendapatkan branch default: {e}")
+            return
 
         all_files = []
         for root, dirs, files in os.walk(folder_path):

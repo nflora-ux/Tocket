@@ -7,7 +7,7 @@ Dirancang untuk **Developer** yang hidup di terminal, males buka browser, tapi t
   <img src="https://github.com/nflora-ux/Tocket/raw/17066362fb116c4388595d54b8e92f6e94c900fd/Screenshot/Screenshot.png" alt="Main Menu Tocket" width="720">
 </p>
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.16%2B-blue?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Python-3.14%2B-blue?logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/License-MIT-green" />
   <img src="https://img.shields.io/badge/CLI-Terminal--Native-black" />
   <img src="https://img.shields.io/github/stars/nflora-ux/Tocket?style=social" />
@@ -44,6 +44,7 @@ Tocket bukan sekadar pembungkus API. Ini adalah alat yang memiliki pendapat tent
 - Mengganti nama berkas atau folder (termasuk memindahkan isi folder).
 - Menampilkan pohon direktori repositori.
 - Menghapus folder beserta seluruh isinya (rekursif).
+– Jalankan workflow dari repositori langsung via Tocket.
 
 ### Keamanan Prioritas Utama
 - Token GitHub **dienkripsi menggunakan AES‑GCM**.
@@ -63,7 +64,7 @@ Tocket bukan sekadar pembungkus API. Ini adalah alat yang memiliki pendapat tent
 
 ## Persyaratan Sistem
 
-- Python **3.16 atau lebih baru** (direkomendasikan).
+- Python **3.14 atau lebih baru** (direkomendasikan).
 - Sistem operasi: Linux, Windows (Terminal / CMD), MacOS.
 
 ### Dependensi Utama
@@ -84,6 +85,9 @@ Tocket bukan sekadar pembungkus API. Ini adalah alat yang memiliki pendapat tent
 git clone https://github.com/neveerlabs/Tocket.git
 cd Tocket
 
+## cek versi Python
+python3 --version
+
 # Buat virtual environment
 python3 -m venv .venv
 source .venv/bin/activate   # Linux / macOS
@@ -103,11 +107,12 @@ python3 main.py
   2. Klik Generate new token (classic).
   3. Beri nama token, misalnya "Tocket".
   4. Pilih scopes yang diperlukan:
-  5. repo – akses penuh ke repositori (termasuk privat).
-  6. delete_repo – jika ingin menghapus repositori.
-  7. admin:public_key – jika diperlukan untuk mengelola kunci SSH.
-  8. Klik Generate token.
-  9. Salin token yang muncul.
+  - `repo` – akses penuh ke repositori (termasuk privat).
+  - `delete_repo` – jika ingin menghapus repositori.
+  - `workflow` – jika ingin memicu GitHub Actions.
+  - `admin:public_key` – jika diperlukan untuk mengelola kunci SSH.
+  5. Klik Generate token.
+  6. Salin token yang muncul.
 
 ---
 
@@ -187,6 +192,12 @@ Setup Repositori      Keluar
     - Hapus Folder
       - Masukkan path folder yang akan dihapus.
       - Seluruh isi folder akan dihapus secara rekursif.
+    - Trigger GitHub Actions
+      - Menampilkan daftar workflow yang tersedia di repositori (file .yml di `.github/workflows/`).
+      - Pilih workflow yang ingin dijalankan.
+      - Tentukan branch target (default: branch yang sedang digunakan).
+      - Konfirmasi untuk memicu workflow.
+      - Setelah berhasil, Tocket akan menampilkan pesan sukses dan memberikan tautan ke halaman Actions repositori.
 ## 4. Menghapus Repositori
   - Pilih opsi `Hapus Repositori`, masukkan nama repositori, dan konfirmasi.
 > *Tindakan ini tidak dapat dibatalkan!*
@@ -225,6 +236,11 @@ Tocket/
 ## Token tidak dapat didekripsi
 - Kata sandi yang dimasukkan mungkin salah.
 - Jika benar-benar lupa, hapus token melalui menu Pengaturan dan masukkan token baru.
+
+**Gagal memicu workflow**  
+- Pastikan token memiliki scope `workflow`.  
+- Pastikan file workflow mendukung `workflow_dispatch` (biasanya ada deklarasi `on: workflow_dispatch` di dalam file YAML).  
+- Periksa kembali branch target yang dimasukkan.
 ---
 
 ## Kontribusi
@@ -248,7 +264,7 @@ Anda bebas menggunakan, memodifikasi, dan mendistribusikannya kembali.
   <a href="https://t.me/Neverlabs"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=flat-square&logo=telegram&logoColor=white" alt="Telegram"></a>
   <a href="mailto:userlinuxorg@gmail.com"><img src="https://img.shields.io/badge/Email-D14836?style=flat-square&logo=gmail&logoColor=white" alt="Email"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square&logo=open-source-initiative&logoColor=white" alt="MIT License"></a>
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.16%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.14%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
 </p>
 <p align="center" style="float: right; width: 40%;">
   <b>© 2026 Neverlabs | All rights reserved</b>

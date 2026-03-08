@@ -2,8 +2,9 @@ import requests
 import json
 
 class GitHubClient:
-    def __init__(self, token=None):
+    def __init__(self, token=None, base_url=None):
         self.token = token
+        self.base_url = base_url or "https://api.github.com"
         self.session = requests.Session()
         self.session.headers.update({
             'Accept': 'application/vnd.github.v3+json',
@@ -14,7 +15,7 @@ class GitHubClient:
 
     def validate_token(self):
         try:
-            response = self.session.get('https://api.github.com/user')
+            response = self.session.get(f'{self.base_url}/user')
             response.raise_for_status()
             user_data = response.json()
             scopes = response.headers.get('X-OAuth-Scopes', '').split(', ')
@@ -28,7 +29,7 @@ class GitHubClient:
 
     def list_repos(self):
         try:
-            response = self.session.get('https://api.github.com/user/repos')
+            response = self.session.get(f'{self.base_url}/user/repos')
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -36,7 +37,7 @@ class GitHubClient:
 
     def list_user_public_repos(self, username):
         try:
-            response = self.session.get(f'https://api.github.com/users/{username}/repos')
+            response = self.session.get(f'{self.base_url}/users/{username}/repos')
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -44,7 +45,7 @@ class GitHubClient:
 
     def get_repo(self, owner, repo):
         try:
-            response = self.session.get(f'https://api.github.com/repos/{owner}/{repo}')
+            response = self.session.get(f'{self.base_url}/repos/{owner}/{repo}')
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -66,7 +67,7 @@ class GitHubClient:
         if license_template:
             payload['license_template'] = license_template
         try:
-            response = self.session.post('https://api.github.com/user/repos', json=payload)
+            response = self.session.post(f'{self.base_url}/user/repos', json=payload)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -74,14 +75,14 @@ class GitHubClient:
 
     def delete_repo(self, owner, repo):
         try:
-            response = self.session.delete(f'https://api.github.com/repos/{owner}/{repo}')
+            response = self.session.delete(f'{self.base_url}/repos/{owner}/{repo}')
             response.raise_for_status()
         except requests.RequestException as e:
             raise Exception(f"Failed to delete repo {owner}/{repo}: {e}")
 
     def patch_repo(self, owner, repo, payload):
         try:
-            response = self.session.patch(f'https://api.github.com/repos/{owner}/{repo}', json=payload)
+            response = self.session.patch(f'{self.base_url}/repos/{owner}/{repo}', json=payload)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -89,7 +90,7 @@ class GitHubClient:
 
     def get_gitignore_templates(self):
         try:
-            response = self.session.get('https://api.github.com/gitignore/templates')
+            response = self.session.get(f'{self.base_url}/gitignore/templates')
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -97,7 +98,7 @@ class GitHubClient:
 
     def get_license_templates(self):
         try:
-            response = self.session.get('https://api.github.com/licenses')
+            response = self.session.get(f'{self.base_url}/licenses')
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -118,7 +119,7 @@ class GitHubClient:
         except Exception:
             pass
         try:
-            response = self.session.put(f'https://api.github.com/repos/{owner}/{repo}/contents/{path}', json=payload)
+            response = self.session.put(f'{self.base_url}/repos/{owner}/{repo}/contents/{path}', json=payload)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -134,7 +135,7 @@ class GitHubClient:
             'branch': branch
         }
         try:
-            response = self.session.delete(f'https://api.github.com/repos/{owner}/{repo}/contents/{path}', json=payload)
+            response = self.session.delete(f'{self.base_url}/repos/{owner}/{repo}/contents/{path}', json=payload)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -142,7 +143,7 @@ class GitHubClient:
 
     def list_repo_tree(self, owner, repo, branch='main'):
         try:
-            response = self.session.get(f'https://api.github.com/repos/{owner}/{repo}/git/trees/{branch}?recursive=1')
+            response = self.session.get(f'{self.base_url}/repos/{owner}/{repo}/git/trees/{branch}?recursive=1')
             response.raise_for_status()
             data = response.json()
             return data.get('tree', [])
@@ -151,7 +152,7 @@ class GitHubClient:
 
     def get_contents(self, owner, repo, path, ref='main'):
         try:
-            response = self.session.get(f'https://api.github.com/repos/{owner}/{repo}/contents/{path}?ref={ref}')
+            response = self.session.get(f'{self.base_url}/repos/{owner}/{repo}/contents/{path}?ref={ref}')
             if response.status_code == 404:
                 return None
             response.raise_for_status()
@@ -161,7 +162,7 @@ class GitHubClient:
 
     def list_workflows(self, owner, repo):
         try:
-            response = self.session.get(f'https://api.github.com/repos/{owner}/{repo}/actions/workflows')
+            response = self.session.get(f'{self.base_url}/repos/{owner}/{repo}/actions/workflows')
             response.raise_for_status()
             data = response.json()
             return data.get('workflows', [])
@@ -169,10 +170,51 @@ class GitHubClient:
             raise Exception(f"Failed to list workflows: {e}")
 
     def trigger_workflow(self, owner, repo, workflow_id, ref):
-        url = f'https://api.github.com/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches'
+        url = f'{self.base_url}/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches'
         payload = {'ref': ref}
         try:
             response = self.session.post(url, json=payload)
             response.raise_for_status()
         except requests.RequestException as e:
             raise Exception(f"Failed to trigger workflow: {e}")
+
+    def list_branches(self, owner, repo):
+        try:
+            response = self.session.get(f'{self.base_url}/repos/{owner}/{repo}/branches')
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            raise Exception(f"Failed to list branches: {e}")
+
+    def create_branch(self, owner, repo, new_branch, source_branch):
+        source_sha = None
+        try:
+            ref_response = self.session.get(f'{self.base_url}/repos/{owner}/{repo}/git/refs/heads/{source_branch}')
+            ref_response.raise_for_status()
+            source_sha = ref_response.json()['object']['sha']
+        except requests.RequestException as e:
+            raise Exception(f"Failed to get source branch SHA: {e}")
+        payload = {
+            'ref': f'refs/heads/{new_branch}',
+            'sha': source_sha
+        }
+        try:
+            response = self.session.post(f'{self.base_url}/repos/{owner}/{repo}/git/refs', json=payload)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            raise Exception(f"Failed to create branch: {e}")
+
+    def delete_branch(self, owner, repo, branch):
+        try:
+            response = self.session.delete(f'{self.base_url}/repos/{owner}/{repo}/git/refs/heads/{branch}')
+            response.raise_for_status()
+        except requests.RequestException as e:
+            raise Exception(f"Failed to delete branch: {e}")
+
+    def update_default_branch(self, owner, repo, new_default):
+        payload = {'default_branch': new_default}
+        try:
+            response = self.session.patch(f'{self.base_url}/repos/{owner}/{repo}', json=payload)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            raise Exception(f"Failed to update default branch: {e}")

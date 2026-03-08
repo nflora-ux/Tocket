@@ -25,11 +25,11 @@ from .utils import (
 from .github_api import GitHubClient
 
 ASCII_ART = r"""
-TTTTTTTTTT  OOOOO  CCCCC K   K EEEEE TTTTTTTTTT
+TTTTTTTTTT  OOOOO   CCCC K   K EEEEE TTTTTTTTTT
     TT     O     O C     K  K  E         TT
     TT     O     O C     KKK   EEEE      TT
     TT     O     O C     K  K  E         TT
-    TT      OOOOO  CCCCC K   K EEEEE     TT
+    TT      OOOOO   CCCC K   K EEEEE     TT
 """
 
 repo_cache: Dict[str, Tuple[float, list]] = {}

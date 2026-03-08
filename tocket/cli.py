@@ -31,9 +31,8 @@ TTTTTTTTTT  OOOOO  CCCCC K   K EEEEE TTTTTTTTTT
     TT      OOOOO  CCCCC K   K EEEEE     TT
 """
 
-# Cache untuk daftar repositori (owner -> (timestamp, list_repos))
 repo_cache: Dict[str, Tuple[float, list]] = {}
-CACHE_TTL = 300  # 5 menit
+CACHE_TTL = 50
 
 def ensure_db() -> ConfigDB:
     return ConfigDB()

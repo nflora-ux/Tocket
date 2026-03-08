@@ -293,7 +293,7 @@ def main_menu_loop(db: ConfigDB, gh_client: Optional[GitHubClient], username: st
             print_header(ASCII_ART, VERSION, username or "anonymous")
             questions = [
                 inquirer.List('action',
-                              message=f"{username}@Tocket $ Pilih aksi",
+                              message=f"{username}@Tocket $",
                               choices=[
                                   ('Buat Repositori', '1'),
                                   ('List Repositori', '2'),

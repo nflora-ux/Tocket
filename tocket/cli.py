@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import sys
 import os
 import time
@@ -107,10 +108,10 @@ def login_flow(db: ConfigDB) -> Tuple[Optional[str], Optional[str], Optional[str
                 password = pwd
                 break
             else:
-                display_error("Kata sandi yang dimasukkan salah.")
+                display_error("Kata sandi yang dimasukkan salah!")
                 attempts += 1
         if attempts >= 3 and password is None:
-            display_error("Batas percobaan tercapai. Aplikasi akan ditutup.")
+            display_error("Batas percobaan tercapai. Aplikasi akan ditutup!")
             sys.exit(1)
     else:
         display_warning("Tidak ada kata sandi lokal. Anda dapat membuatnya di menu Pengaturan nanti.")
@@ -233,6 +234,7 @@ def show_help():
         • repo (untuk akses penuh ke repositori)
         • delete_repo (jika ingin menghapus repositori)
         • admin:public_key (jika ingin mengelola kunci SSH)
+        • workflow (jika ingin memicu GitHub Actions)
    - Klik "Generate token" dan salin token yang muncul (token hanya ditampilkan sekali).
 
 [bold]2. Penyimpanan Token[/bold]
@@ -248,6 +250,7 @@ def show_help():
    • Upload semua file dalam folder (tanpa subfolder) atau seluruh folder beserta subfolder.
    • Update file repositori dengan konten dari file lokal.
    • Hapus folder beserta isinya.
+   • Picu GitHub Actions workflow secara manual.
    • Pengaturan token dan kata sandi lokal.
 
 [bold]4. Privasi dan Keamanan[/bold]
@@ -387,7 +390,6 @@ def list_repos_flow(db: ConfigDB, gh: Optional[GitHubClient]):
 
         if gh_local and getattr(gh_local, "token", None):
             try:
-                # Cek cache
                 cache_key = f"user_{gh_local.token[:10]}"
                 now = time.time()
                 if cache_key in repo_cache and (now - repo_cache[cache_key][0]) < CACHE_TTL:
@@ -488,12 +490,11 @@ def list_repos_flow(db: ConfigDB, gh: Optional[GitHubClient]):
             display_warning("Tidak ada repositori untuk ditampilkan. Coba buat repositori baru atau periksa token/nama pengguna Anda.")
             return
 
-        # Tampilkan tabel
-        table = Table(title="Repositori", box=box.SIMPLE)
+        table = Table(title="My Repository's", box=box.SIMPLE)
         table.add_column("No", justify="right", style="cyan")
         table.add_column("Repositori", style="white", no_wrap=True)
         table.add_column("Visibilitas", justify="center")
-        table.add_column("Cabang", justify="center")
+        table.add_column("Branch", justify="center")
 
         for idx, r in enumerate(repos, 1):
             name = r.get("name") or r.get("full_name") or str(r.get("html_url") or "")
@@ -512,16 +513,15 @@ def list_repos_flow(db: ConfigDB, gh: Optional[GitHubClient]):
 
         console.print(table)
 
-        # Opsi filter
-        if Confirm.ask("Ingin mencari repositori berdasarkan nama? (y/N)", default=False):
-            filter_text = Prompt.ask("Masukkan sebagian nama repositori").lower()
+        if Confirm.ask("Ingin mencari repositori berdasarkan nama?", default=False):
+            filter_text = Prompt.ask("Masukkan nama repositori").lower()
             filtered = [(i, r) for i, r in enumerate(repos, 1) if filter_text in r.get("name", "").lower()]
             if filtered:
-                console.print("[bold]Hasil filter:[/bold]")
+                console.print("[bold]Hasil pencarian:[/bold]")
                 for idx, r in filtered:
                     console.print(f"{idx}. {r.get('name')}")
             else:
-                display_warning("Tidak ada repositori yang cocok.")
+                display_warning("Tidak dapat menemukan repositori yang cocok!")
 
     except Exception as e:
         display_error(f"Gagal mengambil daftar repositori: {e}")
@@ -532,7 +532,7 @@ def list_repos_flow(db: ConfigDB, gh: Optional[GitHubClient]):
 def delete_repo_flow(db: ConfigDB, gh: Optional[GitHubClient], username: str):
     try:
         if gh is None or gh.token is None:
-            display_error("Diperlukan token dengan lingkup repo untuk menghapus repositori.")
+            display_error("Diperlukan token dengan scopes `repo` untuk menghapus repositori. Tambahkan token di Pengaturan!")
             input("\nTekan Enter...")
             return
 
@@ -548,7 +548,7 @@ def delete_repo_flow(db: ConfigDB, gh: Optional[GitHubClient], username: str):
         name = answers['name'].strip()
         gh.delete_repo(username, name)
         db.add_history("delete_repo", f"{username}/{name}")
-        display_success("Repositori berhasil dihapus.")
+        display_success("Repositori berhasil dihapus!")
     except Exception as e:
         display_error(f"Gagal menghapus repositori: {e}")
     finally:
@@ -576,13 +576,12 @@ def setup_repo_flow(db: ConfigDB, gh: Optional[GitHubClient], username: str, pas
             repos = gh.list_repos()
             found = any(r.get("name") == repo_name for r in repos)
             if not found:
-                display_error("Repositori tidak ditemukan di akun Anda.")
+                display_error("Repositori tidak dapat ditemukan di akun Anda!")
                 return
         except Exception as e:
             display_error(f"Gagal memeriksa repositori: {e}")
             return
 
-        # Pilih cabang (branch)
         branch = get_repo_default_branch(gh, username, repo_name) or "main"
         if Confirm.ask(f"Menggunakan cabang default '{branch}'. Ingin mengganti cabang?", default=False):
             branch = Prompt.ask("Masukkan nama cabang", default=branch)
@@ -599,6 +598,7 @@ def setup_repo_flow(db: ConfigDB, gh: Optional[GitHubClient], username: str, pas
                 ('Ubah .gitignore', '7'),
                 ('Ubah Lisensi', '8'),
                 ('Hapus folder', '9'),
+                ('Trigger GitHub Actions', '10'),
                 ('Kembali', '0'),
             ]
             q = inquirer.List('opt', message="Pilih opsi", choices=menu_choices, carousel=True)
@@ -624,10 +624,12 @@ def setup_repo_flow(db: ConfigDB, gh: Optional[GitHubClient], username: str, pas
                 change_license_flow(db, gh, username, repo_name, branch)
             elif opt == '9':
                 delete_folder_flow(db, gh, username, repo_name, branch)
+            elif opt == '10':
+                trigger_workflow_flow(db, gh, username, repo_name, branch)
             elif opt == '0':
                 break
     except Exception as e:
-        display_error(f"Gagal di setup repositori: {e}")
+        display_error(f"Gagal setup repositori: {e}")
     finally:
         input("\nTekan Enter untuk kembali ke menu...")
 
@@ -654,7 +656,7 @@ def display_directory(path: Path):
             ukuran = "-"
         table.add_row(str(idx), nama, tipe, ukuran)
     console.print(table)
-    console.print("[dim]0: .. (ke folder induk)[/dim]")
+    console.print("[dim]0: .. (folder sebelumnya)[/dim]")
     console.print("[dim]all: Upload semua file di folder ini (tanpa subfolder)[/dim]")
     console.print("[dim]subfolder: Upload seluruh folder ini beserta subfolder (rekursif)[/dim]")
     console.print("[dim]q: batal[/dim]")
@@ -675,7 +677,7 @@ def pick_local_file() -> Optional[Path]:
             if not path.is_absolute():
                 path = current / path
             if not path.exists() or not path.is_file():
-                display_error("File tidak ditemukan.")
+                display_error("File tidak dapat ditemukan.")
                 continue
             return path
         else:
@@ -683,7 +685,7 @@ def pick_local_file() -> Optional[Path]:
                 idx = int(sel)
                 if idx == 0:
                     if current.parent == current:
-                        display_warning("Sudah berada di root.")
+                        display_warning("Sudah berada di dalam root.")
                     else:
                         current = current.parent
                 else:
@@ -695,7 +697,7 @@ def pick_local_file() -> Optional[Path]:
                         else:
                             return chosen
                     else:
-                        display_error("Nomor tidak valid.")
+                        display_error("Input tidak valid!")
             except ValueError:
                 display_error("Input tidak dikenali.")
 
@@ -1072,6 +1074,41 @@ def update_file_flow(db: ConfigDB, gh: GitHubClient, owner: str, repo: str, bran
         display_success(f"File {repo_path} berhasil diperbarui.")
     except Exception as e:
         display_error(f"Gagal memperbarui file: {e}")
+    finally:
+        input("\nTekan Enter untuk kembali...")
+
+def trigger_workflow_flow(db: ConfigDB, gh: GitHubClient, owner: str, repo: str, branch: str):
+    try:
+        workflows = gh.list_workflows(owner, repo)
+        if not workflows:
+            display_warning("Tidak ditemukan workflow di repositori ini.")
+            return
+
+        workflow_choices = [(f"{w['name']} ({w['path']})", w) for w in workflows]
+        q_workflow = inquirer.List('workflow', message="Pilih workflow yang akan dijalankan", choices=workflow_choices, carousel=True)
+        ans_workflow = inquirer.prompt([q_workflow], raise_keyboard_interrupt=True)
+        if ans_workflow is None:
+            return
+        selected_workflow = ans_workflow['workflow']
+        workflow_id = selected_workflow['id']
+
+        target_branch = Prompt.ask("Masukkan cabang target", default=branch)
+
+        if not Confirm.ask(f"Jalankan workflow {selected_workflow['name']} pada cabang {target_branch}?"):
+            display_warning("Dibatalkan.")
+            return
+
+        with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}")) as progress:
+            task = progress.add_task("[cyan]Memicu workflow...", total=None)
+            gh.trigger_workflow(owner, repo, workflow_id, target_branch)
+            progress.update(task, description="[green]Workflow berhasil dipicu!")
+
+        db.add_history("trigger_workflow", f"{owner}/{repo} - {selected_workflow['name']} on {target_branch}")
+        display_success("Workflow berhasil dipicu. Lihat status di https://github.com/{owner}/{repo}/actions")
+    except Exception as e:
+        display_error(f"Gagal memicu workflow: {e}")
+        if "workflow" in str(e).lower():
+            display_warning("Pastikan token memiliki scope 'workflow'.")
     finally:
         input("\nTekan Enter untuk kembali...")
 
